@@ -1,0 +1,592 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
+
+
+
+
+
+
+
+
+
+
+<div>
+
+<h1>Dynamic .WAV Generation in JavaScript</h1>
+
+<p><a href="http://sk89q.therisenrealm.com/2008/11/dynamically-generating-a-wav-in-javascript/" target="_blank">http://sk89q.therisenrealm.<WBR>com/2008/11/dynamically-<WBR>generating-a-wav-in-<WBR>javascript/</a></p>
+
+<p>This plays a sine wave by generating a .wav file on-the-fly and playing it
+through an EMBED tag linked by a <a href="http://en.wikipedia.org/wiki/Data_URI_scheme" target="_blank">data URI</a>. <strong>No
+external files are used to play the sine wave.</strong></p>
+
+<p>Be aware of the following caveats:</p>
+
+<ul>
+    <li>This has been tested to work on Firefox, Opera, Safari, and Chrome.</li>
+    <li>You need to have a plugin to play the .wav files, and it should support &quot;auto-play.&quot;</li>
+    <li>The generated .wav files cannot become too large or otherwise browsers will not
+        process them. The default settings are known to work.</li>
+	<li>The tracks on a normal CD 
+		(<a href="http://en.wikipedia.org/wiki/Red_Book_%28audio_CD_standard%29" target="_blank">Red Book standard</a>),
+		for comparison, are sampled at 44,100 Hz and has 16 bits per sample.</li>
+</ul>
+
+<form action="#0.1.1_" method="get" target="_blank" onsubmit="return window.confirm(&quot;You are submitting information to an external page.\nAre you sure?&quot;);">
+<fieldset>
+    <legend>Parameters</legend>
+    
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tbody><tr>
+            <th><label>Channels</label></th>
+            <td><input name="channels" size="2" value="1" type="text"></td>
+        </tr>
+        <tr>
+            <th><label>Sample rate</label></th>
+            <td><input name="sampleRate" size="4" value="2024" type="text"> Hz</td>
+        </tr>
+        <tr>
+            <th><label>Bit depth</label></th>
+            <td><input name="bitDepth" size="2" value="16" type="text"> bits/sample</td>
+        </tr>
+        <tr>
+            <th><label>Length</label></th>
+            <td><input name="length" size="2" value="2" type="text"> seconds</td>
+        </tr>
+        <tr>
+            <th><label>&quot;Volume&quot;</label></th>
+            <td><input name="volume" size="6" value="32767" type="text"></td>
+        </tr>
+        <tr>
+            <th><label>Frequency</label></th>
+            <td><input name="frequency" size="6" value="440" type="text"> Hz (for optimal results: frequency ≤ sampleRate / 2)</td>
+        </tr>
+    </tbody></table>
+    <p><input name="showDump" checked type="checkbox"><label> Show hex dump of resulting .wav file</label></p>
+    <p><input value="Generate and play" type="button"></p>
+</fieldset>
+</form>
+
+<div style="display:block">
+    <h2>Result</h2>
+    <p><strong>Size of .wav file:</strong> <span>8140 bytes</span></p>
+    <p><strong>Length of data URI:</strong> <span>10882 bytes</span></p>
+    <h3>Player plugin</h3>
+    <div></div>
+    <div style="display:block">
+        <h3>Hex Dump of .wav</h3>
+        
+        <pre>52 49 46 46 D4 1F 00 00  57 41 56 45 66 6D 74 20  RIFF....WAVEfmt 
+10 00 00 00 01 00 01 00  E8 07 00 00 D0 0F 00 00  ................
+02 00 10 00 64 61 74 61  A0 1F 00 00 00 00 51 7D  ....data......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 00 00 51 7D  e....].h......Q}
+FE 32 6F 97 75 A2 81 42  9B 78 93 EE 4E 80 78 DD  .2o.u..B.x..N.x.
+A5 71 C6 50 3A AF 5B 8E  88 22 B2 7F 6D 11 65 87  .q.P:.[..&quot;..m.e.
+7F BD 8B 5D 91 68 02 CD  AF 82 00 00 51 7D FE 32  ...].h......Q}.2
+6F 97 75 A2 81 42 9B 78  93 EE 4E 80 78 DD A5 71  o.u..B.x..N.x..q
+C6 50 3A AF 5B 8E 88 22  B2 7F 6D 11 65 87 7F BD  .P:.[..&quot;..m.e...
+8B 5D 91 68 02 CD AF 82  00 00 51 7D FE 32 6F 97  .].h......Q}.2o.
+75 A2 81 42 9B 78 93 EE  4E 80 78 DD A5 71 C6 50  u..B.x..N.x..q.P
+3A AF 5B 8E 88 22 B2 7F  6D 11 65 87 7F BD 8B 5D  :.[..&quot;..m.e....]
+91 68 02 CD AF 82 00 00  51 7D FE 32 6F 97 75 A2  .h......Q}.2o.u.
+81 42 9B 78 93 EE 4E 80  78 DD A5 71 C6 50 3A AF  .B.x..N.x..q.P:.
+5B 8E 88 22 B2 7F 6D 11  65 87 7F BD 8B 5D 91 68  [..&quot;..m.e....].h
+02 CD AF 82 00 00 51 7D  FE 32 6F 97 75 A2 81 42  ......Q}.2o.u..B
+9B 78 93 EE 4E 80 78 DD  A5 71 C6 50 3A AF 5B 8E  .x..N.x..q.P:.[.
+88 22 B2 7F 6D 11 65 87  7F BD 8B 5D 91 68 02 CD  .&quot;..m.e....].h..
+AF 82 00 00 51 7D FE 32  6F 97 75 A2 81 42 9B 78  ....Q}.2o.u..B.x
+93 EE 4E 80 78 DD A5 71  C6 50 3A AF 5B 8E 88 22  ..N.x..q.P:.[..&quot;
+B2 7F 6D 11 65 87 7F BD  8B 5D 91 68 02 CD AF 82  ..m.e....].h....
+00 00 51 7D FE 32 6F 97  75 A2 81 42 9B 78 93 EE  ..Q}.2o.u..B.x..
+4E 80 78 DD A5 71 C6 50  3A AF 5B 8E 88 22 B2 7F  N.x..q.P:.[..&quot;..
+6D 11 65 87 7F BD 8B 5D  91 68 02 CD AF 82 00 00  m.e....].h......
+51 7D FE 32 6F 97 75 A2  81 42 9B 78 93 EE 4E 80  Q}.2o.u..B.x..N.
+78 DD A5 71 C6 50 3A AF  5B 8E 88 22 B2 7F 6D 11  x..q.P:.[..&quot;..m.
+65 87 7F BD 8B 5D 91 68  02 CD AF 82 NAN NAN NAN NAN  e....].h....</pre>
+    </div>
+</div>
+
+<div>Written by <a href="http://sk89q.therisenrealm.com/" target="_blank">sk89q</a>.</div>
+
+</div></body></html>
