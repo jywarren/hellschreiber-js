@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<!--
+#######################################
+# 
+# Written by sk89q <http://sk89q.therisenrealm.com>
+# Copyright 2008 sk89q. All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions 
+# are met:
+# 
+# 1. Redistributions of source code must retain the above 
+#    copyright notice, this list of conditions and the following 
+#    disclaimer.
+# 2. Redistributions in binary form must reproduce the above
+#    copyright notice, this list of conditions and the following 
+#    disclaimer in the documentation and/or other materials provided 
+#    with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY SK89Q "AS IS" AND ANY EXPRESS 
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL SK89Q BE LIABLE FOR ANY DIRECT, 
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#######################################
+-->
+
+<head>
+<title>Dynamic Hellschreiber in JavaScript</title>
+<script type="text/javascript">
+//<![CDATA[
+var player; // store embed tag
+
+function hellschreib(message) {
+
+    // split into characters
+    for (var i = 0; i < message.length; i++) {
+        for (var c = 0; c < channels; c++) {
+            var v = volume * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency);
+            data.push(pack("v", v));
+            samples++;
+        }
+    }
+}
+
+// This is where the magic happens
+function generate(f) {
+    var channels = parseInt(f.channels.value);
+    var sampleRate = parseInt(f.sampleRate.value);
+    var bitsPerSample = parseInt(f.bitDepth.value);
+    var milliseconds = parseFloat(f.length.value);
+    var volume = parseInt(f.volume.value);
+    var frequency = parseInt(f.frequency.value);
+    var showDump = f.showDump.checked;
+
+    var data = [];
+    var samples = 0;
+    
+    // Generate the sine waveform
+    //for (var i = 0; i < sampleRate * milliseconds/1000; i++) {
+    //    for (var c = 0; c < channels; c++) {
+    //        var v = volume * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency);
+    //        data.push(pack("v", v));
+    //        samples++;
+    //    }
+    //}
+    message = "hello world"   
+    binary = hellschreib(message)
+ 
+    data = data.join('');
+    
+    // Format sub-chunk
+    var chunk1 = [
+        "fmt ", // Sub-chunk identifier
+        pack("V", 16), // Chunk length
+        pack("v", 1), // Audio format (1 is linear quantization)
+        pack("v", channels),
+        pack("V", sampleRate),
+        pack("V", sampleRate * channels * bitsPerSample / 8), // Byte rate
+        pack("v", channels * bitsPerSample / 8),
+        pack("v", bitsPerSample)
+    ].join('');
+
+    // Data sub-chunk (contains the sound)
+    var chunk2 = [
+        "data", // Sub-chunk identifier
+        pack("V", samples * channels * bitsPerSample / 8), // Chunk length
+        data
+    ].join('');
+    
+    // Header
+    var header = [
+        "RIFF",
+        pack("V", 4 + (8 + chunk1.length) + (8 + chunk2.length)), // Length
+        "WAVE"
+    ].join('');
+
+    var out = [header, chunk1, chunk2].join('');
+    var dataURI = "data:audio/wav;base64," + escape(btoa(out));
+    
+    // Append embed player
+    if (player) {
+        player.parentNode.removeChild(player);
+    }
+    player = document.createElement("embed");
+    player.setAttribute("src", dataURI);
+    player.setAttribute("width", 400);
+    player.setAttribute("height", 100);
+    player.setAttribute("autostart", true);
+    document.getElementById('player-container').appendChild(player);
+    
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('wav-length').innerHTML = out.length + ' bytes';
+    document.getElementById('uri-length').innerHTML = dataURI.length + ' bytes';
+    
+    // Generate the hex dump
+    if (showDump) {
+        document.getElementById('dump').style.display = 'block';
+        document.getElementById('dump-contents').innerHTML = hexDump(out);
+    } else {
+        document.getElementById('dump').style.display = 'none';
+        document.getElementById('dump-contents').innerHTML = '';
+    }
+}
+
+// Base 64 encoding function, for browsers that do not support btoa()
+// by Tyler Akins (http://rumkin.com), available in the public domain
+if (!window.btoa) {
+    function btoa(input) {
+        var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        do {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + 
+                     keyStr.charAt(enc3) + keyStr.charAt(enc4);
+        } while (i < input.length);
+
+        return output;
+    }
+}
+
+// pack() emulation (from the PHP version), for binary crunching
+function pack(fmt) {
+    var output = '';
+    
+    var argi = 1;
+    for (var i = 0; i < fmt.length; i++) {
+        var c = fmt.charAt(i);
+        var arg = arguments[argi];
+        argi++;
+        
+        switch (c) {
+            case "a":
+                output += arg[0] + "\0";
+                break;
+            case "A":
+                output += arg[0] + " ";
+                break;
+            case "C":
+            case "c":
+                output += String.fromCharCode(arg);
+                break;
+            case "n":
+                output += String.fromCharCode((arg >> 8) & 255, arg & 255);
+                break;
+            case "v":
+                output += String.fromCharCode(arg & 255, (arg >> 8) & 255);
+                break;
+            case "N":
+                output += String.fromCharCode((arg >> 24) & 255, (arg >> 16) & 255, (arg >> 8) & 255, arg & 255);
+                break;
+            case "V":
+                output += String.fromCharCode(arg & 255, (arg >> 8) & 255, (arg >> 16) & 255, (arg >> 24) & 255);
+                break;
+            case "x":
+                argi--;
+                output += "\0";
+                break;
+            default:
+                throw new Error("Unknown pack format character '"+c+"'");
+        }
+    }
+    
+    return output;
+}
+
+// Generates a hex dump
+function hexDump(out) {
+    var lines = [];
+    
+    for (var i = 0; i < out.length; i += 16) {
+        var hex = [];
+        var ascii = [];           
+        
+        for (var x = 0; x < 16; x++) {
+            var b = out.charCodeAt(i + x).toString(16).toUpperCase();
+            b = b.length == 1 ? '0' + b : b;
+            hex.push(b + " ");
+            
+            if (out.charCodeAt(i + x) > 126 || out.charCodeAt(i + x) < 32) {
+                ascii.push('.');
+            } else {
+                ascii.push(out.charAt(i + x));
+            }
+            
+            if ((x + 1) % 8 == 0) {
+                hex.push(" ");
+            }
+        }
+        
+        lines.push([hex.join(''), ascii.join('')].join(''));
+    }
+    
+    return lines.join('\n');
+}
+//]]>
+</script>
+<style type="text/css">
+<!--/*--><![CDATA[/*><!--*/
+body {
+    background: #FFFFFF;
+    color: #000000;
+    margin: 0;
+    padding: 20px;
+}
+body, th, td {
+    font: 11pt Arial, sans-serif;
+}
+h1 {
+    font-size: 1.7em;
+    margin-top: 0;
+}
+a:link, a:visited {
+    color: #800000;
+    text-decoration: none;
+    border-bottom: 1px solid #CCCCCC;
+}
+a:hover, a:active {
+    color: #000000;
+    border-color: #000000;
+}
+fieldset {
+    margin: 0 0 15px 0;
+    padding: 6px 10px 15px 10px;
+    border: 1px solid #CCCCCC;
+}
+legend {
+    padding: 3px;
+    background: #EFEFEF;
+    font-size: 1em;
+    font-weight: bold;
+}
+table.form {
+    margin: 5px 0 5px 0;
+}
+table.form th {
+    padding: 0 15px 2px 0;
+    text-align: right;
+    font-weight: bold;
+}
+table.form td {
+    padding: 0 15px 2px 0;
+}
+#player-container {
+    border: 3px solid #CC0000;
+}
+#author { 
+    margin: 100px 0 0 0;
+}
+/*]]>*/-->
+</style>
+</head>
+
+<body>
+
+<h1>Dynamic .WAV Generation in JavaScript</h1>
+
+<p><a href="http://sk89q.therisenrealm.com/2008/11/dynamically-generating-a-wav-in-javascript/">http://sk89q.therisenrealm.com/2008/11/dynamically-generating-a-wav-in-javascript/</a></p>
+
+<p>This plays a sine wave by generating a .wav file on-the-fly and playing it
+through an EMBED tag linked by a <a href="http://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>. <strong>No
+external files are used to play the sine wave.</strong></p>
+
+<p>Be aware of the following caveats:</p>
+
+<ul>
+    <li>This has been tested to work on Firefox, Opera, Safari, and Chrome.</li>
+    <li>You need to have a plugin to play the .wav files, and it should support "auto-play."</li>
+    <li>The generated .wav files cannot become too large or otherwise browsers will not
+        process them. The default settings are known to work.</li>
+	<li>The tracks on a normal CD 
+		(<a href="http://en.wikipedia.org/wiki/Red_Book_(audio_CD_standard)">Red Book standard</a>),
+		for comparison, are sampled at 44,100 Hz and has 16 bits per sample.</li>
+</ul>
+
+<form action="#" method="get">
+<fieldset>
+    <legend>Parameters</legend>
+    
+    <table border="0" cellspacing="0" cellpadding="0" class="form">
+        <tr>
+            <th><label for="channels">Channels</label></th>
+            <td><input type="text" name="channels" id="channels" size="2" value="1" /></td>
+        </tr>
+        <tr>
+            <th><label for="sampleRate">Sample rate</label></th>
+            <td><input type="text" name="sampleRate" id="sampleRate" size="4" value="2024" /> Hz</td>
+        </tr>
+        <tr>
+            <th><label for="bitDepth">Bit depth</label></th>
+            <td><input type="text" name="bitDepth" id="bitDepth" size="2" value="16" /> bits/sample</td>
+        </tr>
+        <tr>
+            <th><label for="length">Length</label></th>
+            <td><input type="text" name="length" id="length" size="2" value="2" /> milliseconds</td>
+        </tr>
+        <tr>
+            <th><label for="volume">"Volume"</label></th>
+            <td><input type="text" name="volume" id="volume" size="6" value="32767" /></td>
+        </tr>
+        <tr>
+            <th><label for="frequency">Frequency</label></th>
+            <td><input type="text" name="frequency" id="frequency" size="6" value="440" /> Hz (for optimal results: frequency &le; sampleRate / 2)</td>
+        </tr>
+    </table>
+    <p><input type="checkbox" name="showDump" id="showDump" checked="checked" /><label for="showDump"> Show hex dump of resulting .wav file</label></p>
+    <p><input type="button" value="Generate and play" onclick="generate(this.form)" /></p>
+</fieldset>
+</form>
+
+<div id="result" style="display: none">
+    <h2>Result</h2>
+    <p><strong>Size of .wav file:</strong> <span id="wav-length"></span></p>
+    <p><strong>Length of data URI:</strong> <span id="uri-length"></span></p>
+    <h3>Player plugin</h3>
+    <div id="player-container"></div>
+    <div id="dump" style="display: none">
+        <h3>Hex Dump of .wav</h3>
+        
+        <pre id="dump-contents"></pre>
+    </div>
+</div>
+
+<div id="author">Written by <a href="http://sk89q.therisenrealm.com">sk89q</a>.</div>
+
+</body>
+
+</html>
