@@ -12,6 +12,10 @@ A p.irateship project - p.irateship.com
 
 ##Notes##
 
+
+
+
+
 http://www.nonstopsystems.com/radio/hellschreiber-function-operation.htm
 
 fldigi: http://www.w1hkj.com/download.html
