@@ -10,6 +10,8 @@ FELDHELLSCHREIBER implementation in JavaScript
 
 A p.irateship project - p.irateship.com
 
+Read more here: http://unterbahn.com/2014/11/partial-feldhellschreiber-encoder-in-javascript/
+
 ##Notes##
 
 
